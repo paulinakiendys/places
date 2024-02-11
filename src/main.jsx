@@ -5,6 +5,8 @@ import Layout from "./routes/Layout";
 import NotFound from "./routes/NotFound";
 import About from "./routes/About";
 import Index from "./routes/Index";
+import Login from "./routes/Login";
+import App from "./routes/App";
 
 const router = createBrowserRouter([
   {
@@ -19,6 +21,14 @@ const router = createBrowserRouter([
       {
         path: "about",
         element: <About />,
+      },
+      {
+        path: "login",
+        element: <Login />,
+      },
+      {
+        path: "app",
+        element: <App />,
       },
     ],
   },

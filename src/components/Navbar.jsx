@@ -7,9 +7,12 @@ export default function Navbar() {
         <NavLink className="navbar-brand" to={``}>
           Places
         </NavLink>
-        <div className="navbar-nav">
+        <div className="navbar-nav d-flex flex-row gap-3">
           <NavLink className="nav-link" to={`about`}>
             About
+          </NavLink>
+          <NavLink className="btn btn-primary" to={`login`}>
+            Log in
           </NavLink>
         </div>
       </div>

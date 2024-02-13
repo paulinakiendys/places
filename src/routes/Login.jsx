@@ -14,7 +14,7 @@ export default function Login() {
               className="form-control"
               id="email"
               aria-describedby="emailHelp"
-              value={"email@example.com"}
+              defaultValue={"email@example.com"}
             />
             <div id="emailHelp" className="form-text">
               We&apos;ll never share your email with anyone else.
@@ -29,7 +29,7 @@ export default function Login() {
               className="form-control"
               id="password"
               aria-describedby="passwordHelp"
-              value={"password"}
+              defaultValue={"password"}
             />
             <div id="passwordHelp" className="form-text">
               Your password must be 8-20 characters long, contain letters and

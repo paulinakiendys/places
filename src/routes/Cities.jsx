@@ -1,6 +1,7 @@
-import data from "../../data/cities.json";
 import CitiesList from "../components/CitiesList";
+import { useCities } from "../contexts/CitiesContext";
 
 export default function Cities() {
-  return <CitiesList cities={data.cities} />;
+  const { cities } = useCities();
+  return <CitiesList cities={cities} />;
 }

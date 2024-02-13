@@ -1,10 +1,11 @@
 import { useParams } from "react-router-dom";
-import data from "../../data/cities.json";
 import Alert from "../components/Alert";
+import { useCities } from "../contexts/CitiesContext";
 
 export default function City() {
   const { cityId } = useParams();
-  const city = data.cities.find((city) => city.id === cityId);
+  const { cities } = useCities();
+  const city = cities.find((city) => city.id === cityId);
   if (!city) {
     return <Alert variant={"secondary"} message={"City not found"} />;
   }

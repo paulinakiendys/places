@@ -1,10 +1,14 @@
-import data from "../../data/cities.json";
 import CountriesList from "../components/CountriesList";
+import Spinner from "../components/Spinner";
+import { useCities } from "../contexts/CitiesContext";
 
 export default function Cities() {
+  const { cities, loading } = useCities();
+  if (loading) return <Spinner />;
+
   const countryInfo = {};
 
-  data.cities.forEach(({ country }) => {
+  cities.forEach(({ country }) => {
     countryInfo[country] = countryInfo[country] || {
       name: country,
       count: 0,

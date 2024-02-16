@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 export default function CitiesListItem({ city }) {
   return (
     <NavLink
-      to={`${city.id}`}
+      to={`${city.id}?position=${city.position}`}
       className="list-group-item list-group-item-action d-flex justify-content-between"
       key={city.id}
     >

@@ -5,6 +5,7 @@ export default function Login() {
     <section id="login">
       <div className="container-fluid">
         <form>
+          <h2>Sign in to your account</h2>
           <div className="mb-3">
             <label htmlFor="email" className="form-label">
               Email address

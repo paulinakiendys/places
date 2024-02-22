@@ -1,71 +1,67 @@
-import {
-  MapContainer,
-  TileLayer,
-  Popup,
-  Marker,
-  useMap,
-  useMapEvents,
-} from "react-leaflet";
-import "leaflet/dist/leaflet.css";
 import { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { MapContainer, TileLayer } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
 import { useCities } from "../contexts/CitiesContext";
+import UpdateMapCenter from "./UpdateMapCenter";
+import CitiesMarkers from "./CitiesMarkers";
+import Spinner from "./Spinner";
+import HandleMapClick from "./HandleMapClick";
+import { useGeolocation } from "../hooks/useGeolocation";
+import { useUrlPosition } from "../hooks/useUrlPosition";
 
 export default function Map() {
-  const { cities } = useCities();
-  const [defaultPosition, setDefaultPosition] = useState([51.505, 10]);
-  const [searchParams] = useSearchParams();
+  const { cities, isLoading: isLoadingCities } = useCities();
+  const [mapPosition, setMapPosition] = useState([51.505, 10]);
+  const paramPosition = useUrlPosition();
 
-  const position = searchParams.get("position");
+  const {
+    getPosition,
+    isLoading: isLoadingGeolocation,
+    position: geolocationPosition,
+  } = useGeolocation();
 
   useEffect(() => {
-    if (position) {
-      setDefaultPosition(position.split(",").map(parseFloat));
+    if (paramPosition) {
+      const [lat, lng] = paramPosition.split(",").map(Number);
+      setMapPosition([lat, lng]);
     }
-  }, [position]);
+  }, [paramPosition]);
+
+  useEffect(() => {
+    if (geolocationPosition) {
+      const [lat, lng] = geolocationPosition;
+      setMapPosition([lat, lng]);
+    }
+  }, [geolocationPosition]);
+
+  if (isLoadingCities) return <Spinner />;
 
   return (
-    <MapContainer
-      center={defaultPosition}
-      zoom={4}
-      scrollWheelZoom={true}
-      style={{ height: "50vh" }}
-    >
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
-      {cities.map((city) => (
-        <Marker position={city.position} key={city.id}>
-          <Popup>
-            <span>{city.name}</span>
-          </Popup>
-        </Marker>
-      ))}
-      <ChangeMapView position={position} zoom={9} />
-      <HandleMapClick />
-    </MapContainer>
+    <>
+      {!geolocationPosition && (
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={getPosition}
+          disabled={isLoadingGeolocation}
+        >
+          {isLoadingGeolocation ? "Loading" : "Use my position"}
+        </button>
+      )}
+      <MapContainer
+        center={mapPosition}
+        zoom={4}
+        scrollWheelZoom={true}
+        style={{ height: "50vh" }}
+      >
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+        <CitiesMarkers cities={cities} />
+        <UpdateMapCenter center={mapPosition} />
+        <HandleMapClick />
+      </MapContainer>
+    </>
   );
-}
-
-function ChangeMapView({ position, zoom }) {
-  const map = useMap();
-
-  useEffect(() => {
-    if (position) {
-      map.setView(position.split(",").map(parseFloat), zoom);
-    }
-  }, [position, map, zoom]);
-
-  return null;
-}
-
-function HandleMapClick() {
-  const navigate = useNavigate();
-
-  useMapEvents({
-    click: () => {
-      navigate("form");
-    },
-  });
 }

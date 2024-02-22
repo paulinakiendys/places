@@ -5,7 +5,7 @@ export const CitiesContext = createContext(null);
 
 export function CitiesProvider({ children }) {
   const [cities, setCities] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchCities = async () => {
@@ -22,7 +22,7 @@ export function CitiesProvider({ children }) {
       } catch (error) {
         console.error("Error fetching cities:", error.message);
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
 
@@ -30,7 +30,7 @@ export function CitiesProvider({ children }) {
   }, []);
 
   return (
-    <CitiesContext.Provider value={{ cities, loading }}>
+    <CitiesContext.Provider value={{ cities, isLoading }}>
       {children}
     </CitiesContext.Provider>
   );

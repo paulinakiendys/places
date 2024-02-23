@@ -1,15 +1,54 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useReducer } from "react";
 import { supabase } from "../services/supabase";
+
+const initialState = {
+  cities: null,
+  isLoading: true,
+};
+
+const citiesReducer = (state, action) => {
+  switch (action.type) {
+    case "FETCH_SUCCESS":
+      return {
+        ...state,
+        cities: action.payload,
+        isLoading: false,
+      };
+    case "ADD_CITY":
+      return {
+        ...state,
+        cities: state.cities
+          ? [...state.cities, ...action.payload]
+          : action.payload,
+        isLoading: false,
+      };
+    case "DELETE_CITY":
+      return {
+        ...state,
+        cities: state.cities
+          ? state.cities.filter((city) => city.id !== action.payload)
+          : [],
+        isLoading: false,
+      };
+    case "SET_LOADING":
+      return {
+        ...state,
+        isLoading: action.payload,
+      };
+    default:
+      return state;
+  }
+};
 
 export const CitiesContext = createContext(null);
 
 export function CitiesProvider({ children }) {
-  const [cities, setCities] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [state, dispatch] = useReducer(citiesReducer, initialState);
 
   useEffect(() => {
     const fetchCities = async () => {
       try {
+        dispatch({ type: "SET_LOADING", payload: true });
         let { data: citiesData, error } = await supabase
           .from("cities")
           .select("*");
@@ -18,11 +57,11 @@ export function CitiesProvider({ children }) {
           throw error;
         }
 
-        setCities(citiesData);
+        dispatch({ type: "FETCH_SUCCESS", payload: citiesData });
       } catch (error) {
         console.error("Error fetching cities:", error.message);
       } finally {
-        setIsLoading(false);
+        dispatch({ type: "SET_LOADING", payload: false });
       }
     };
 
@@ -31,7 +70,7 @@ export function CitiesProvider({ children }) {
 
   const createCity = async (city) => {
     try {
-      setIsLoading(true);
+      dispatch({ type: "SET_LOADING", payload: true });
       const { data, error } = await supabase
         .from("cities")
         .insert([city])
@@ -40,40 +79,41 @@ export function CitiesProvider({ children }) {
       if (error) {
         throw error;
       }
-      setCities((prevCities) => (prevCities ? [...prevCities, ...data] : data));
+
+      dispatch({ type: "ADD_CITY", payload: data });
     } catch (error) {
       console.error("Error adding city:", error.message);
     } finally {
-      setIsLoading(false);
+      dispatch({ type: "SET_LOADING", payload: false });
     }
   };
 
   const deleteCity = async (cityId) => {
     try {
-      setIsLoading(true);
+      dispatch({ type: "SET_LOADING", payload: true });
 
-      const { data, error } = await supabase
-        .from("cities")
-        .delete()
-        .eq("id", cityId);
+      const { error } = await supabase.from("cities").delete().eq("id", cityId);
 
       if (error) {
         throw error;
       }
 
-      setCities((prevCities) =>
-        prevCities ? prevCities.filter((city) => city.id !== cityId) : []
-      );
+      dispatch({ type: "DELETE_CITY", payload: cityId });
     } catch (error) {
       console.error("Error deleting city:", error.message);
     } finally {
-      setIsLoading(false);
+      dispatch({ type: "SET_LOADING", payload: false });
     }
   };
 
   return (
     <CitiesContext.Provider
-      value={{ cities, isLoading, createCity, deleteCity }}
+      value={{
+        cities: state.cities,
+        isLoading: state.isLoading,
+        createCity,
+        deleteCity,
+      }}
     >
       {children}
     </CitiesContext.Provider>

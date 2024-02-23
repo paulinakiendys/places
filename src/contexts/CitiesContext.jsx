@@ -48,8 +48,33 @@ export function CitiesProvider({ children }) {
     }
   };
 
+  const deleteCity = async (cityId) => {
+    try {
+      setIsLoading(true);
+
+      const { data, error } = await supabase
+        .from("cities")
+        .delete()
+        .eq("id", cityId);
+
+      if (error) {
+        throw error;
+      }
+
+      setCities((prevCities) =>
+        prevCities ? prevCities.filter((city) => city.id !== cityId) : []
+      );
+    } catch (error) {
+      console.error("Error deleting city:", error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <CitiesContext.Provider value={{ cities, isLoading, createCity }}>
+    <CitiesContext.Provider
+      value={{ cities, isLoading, createCity, deleteCity }}
+    >
       {children}
     </CitiesContext.Provider>
   );

@@ -1,23 +1,27 @@
-import { Link } from "react-router-dom";
 import { useUrlPosition } from "../hooks/useUrlPosition";
 import { useEffect, useState } from "react";
 import Alert from "../components/Alert";
 import Spinner from "../components/Spinner";
+import BackButton from "../components/BackButton";
+import { useCities } from "../contexts/CitiesContext";
+import { useNavigate } from "react-router-dom";
 
 export default function Form() {
   const paramPosition = useUrlPosition();
-
   const [name, setName] = useState("");
   const [country, setCountry] = useState("");
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [note, setNote] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingCityData, setIsLoadingCityData] = useState(false);
   const [error, setError] = useState("");
+  const { createCity, isLoading: isLoadingAddCity } = useCities();
+  const navigate = useNavigate();
 
   useEffect(() => {
+    if (!paramPosition) return;
     async function fetchCityData() {
       try {
-        setIsLoading(true);
+        setIsLoadingCityData(true);
         setError("");
         const [latitude, longitude] = paramPosition.split(",");
         const res = await fetch(
@@ -32,20 +36,37 @@ export default function Form() {
       } catch (error) {
         setError(error.message);
       } finally {
-        setIsLoading(false);
+        setIsLoadingCityData(false);
       }
     }
     fetchCityData();
   }, [paramPosition]);
 
-  if (isLoading) return <Spinner />;
+  async function handleSubmit(e) {
+    e.preventDefault();
+
+    const city = {
+      name,
+      country,
+      date,
+      note,
+      position: paramPosition.split(",").map(Number),
+    };
+
+    await createCity(city);
+    navigate("/app");
+  }
+
+  if (!paramPosition) return <Alert variant="info" message="Click on a city" />;
+
+  if (isLoadingCityData) return <Spinner />;
 
   if (error) return <Alert variant="danger" message={error} />;
 
   return (
     <section id="addCity">
       <div className="container-fluid">
-        <form>
+        <form onSubmit={handleSubmit}>
           <h2>Add a city</h2>
           <div className="mb-3">
             <label htmlFor="name" className="form-label">
@@ -58,6 +79,8 @@ export default function Form() {
               aria-describedby="nameHelp"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              required
+              disabled={isLoadingAddCity}
             />
             <div id="nameHelp" className="form-text">
               Enter the name of a city you visited.
@@ -74,6 +97,8 @@ export default function Form() {
               aria-describedby="dateHelp"
               value={date}
               onChange={(e) => setDate(e.target.value)}
+              required
+              disabled={isLoadingAddCity}
             />
             <div id="dateHelp" className="form-text">
               Enter the date you visited the city.
@@ -88,14 +113,22 @@ export default function Form() {
               id="note"
               rows="3"
               aria-describedby="noteHelp"
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              disabled={isLoadingAddCity}
             ></textarea>
             <div id="noteHelp" className="form-text">
               Enter some notes about your visit.
             </div>
           </div>
-          <Link className="btn btn-primary" to={"/app"}>
+          <button
+            className="btn btn-primary"
+            type="submit"
+            disabled={isLoadingAddCity}
+          >
             Add city
-          </Link>
+          </button>
+          <BackButton url={"/app"} />
         </form>
       </div>
     </section>

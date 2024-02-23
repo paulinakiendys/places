@@ -29,8 +29,27 @@ export function CitiesProvider({ children }) {
     fetchCities();
   }, []);
 
+  const createCity = async (city) => {
+    try {
+      setIsLoading(true);
+      const { data, error } = await supabase
+        .from("cities")
+        .insert([city])
+        .select();
+
+      if (error) {
+        throw error;
+      }
+      setCities((prevCities) => (prevCities ? [...prevCities, ...data] : data));
+    } catch (error) {
+      console.error("Error adding city:", error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <CitiesContext.Provider value={{ cities, isLoading }}>
+    <CitiesContext.Provider value={{ cities, isLoading, createCity }}>
       {children}
     </CitiesContext.Provider>
   );

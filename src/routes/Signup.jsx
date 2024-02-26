@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 import Alert from "../components/Alert";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 
-export default function Login() {
+export default function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { user, error, isLoading, login } = useAuth();
+  const { user, error, isLoading, signup } = useAuth();
   const navigate = useNavigate();
 
   async function handleSubmit(e) {
     e.preventDefault();
-    login({ email, password });
+    signup({ email, password });
   }
 
   useEffect(() => {
@@ -21,10 +21,10 @@ export default function Login() {
   }, [user, navigate]);
 
   return (
-    <section id="login">
+    <section id="signup">
       <div className="container-fluid">
         <form onSubmit={handleSubmit}>
-          <h2>Sign in to your account</h2>
+          <h2>Create an account</h2>
           {error && <Alert variant="danger" message={error} />}
           <div className="mb-3">
             <label htmlFor="email" className="form-label">
@@ -38,8 +38,10 @@ export default function Login() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              disabled={isLoading}
             />
+            <div id="emailHelp" className="form-text">
+              We&apos;ll never share your email with anyone else.
+            </div>
           </div>
           <div className="mb-3">
             <label htmlFor="password" className="form-label">
@@ -52,19 +54,18 @@ export default function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              disabled={isLoading}
             />
+            <div id="passwordHelp" className="form-text">
+              Your password must be at least 6 characters long.
+            </div>
           </div>
           <button
             className="btn btn-primary"
             type="submit"
             disabled={isLoading}
           >
-            Log in
+            Sign up
           </button>
-          <Link className="btn btn-link" to={"/signup"}>
-            Create account
-          </Link>
         </form>
       </div>
     </section>

@@ -1,6 +1,14 @@
 import { NavLink } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function Navbar() {
+  const { user, logout, isLoading } = useAuth();
+
+  function handleClick(e) {
+    e.preventDefault();
+    logout();
+  }
+
   return (
     <nav className="navbar">
       <div className="container-fluid">
@@ -8,12 +16,24 @@ export default function Navbar() {
           Places
         </NavLink>
         <div className="navbar-nav d-flex flex-row gap-3">
-          <NavLink className="nav-link" to={`about`}>
-            About
-          </NavLink>
-          <NavLink className="btn btn-primary" to={`login`}>
-            Log in
-          </NavLink>
+          {!user && (
+            <NavLink className="nav-link" to={`about`}>
+              About
+            </NavLink>
+          )}
+          {user ? (
+            <button
+              className="btn btn-primary"
+              onClick={handleClick}
+              disabled={isLoading}
+            >
+              Log out
+            </button>
+          ) : (
+            <NavLink className="btn btn-primary" to={`login`}>
+              Log in
+            </NavLink>
+          )}
         </div>
       </div>
     </nav>

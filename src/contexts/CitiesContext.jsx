@@ -43,7 +43,10 @@ const citiesReducer = (state, action) => {
 export const CitiesContext = createContext(null);
 
 export function CitiesProvider({ children }) {
-  const [state, dispatch] = useReducer(citiesReducer, initialState);
+  const [{ cities, isLoading }, dispatch] = useReducer(
+    citiesReducer,
+    initialState
+  );
 
   useEffect(() => {
     const fetchCities = async () => {
@@ -109,8 +112,8 @@ export function CitiesProvider({ children }) {
   return (
     <CitiesContext.Provider
       value={{
-        cities: state.cities,
-        isLoading: state.isLoading,
+        cities,
+        isLoading,
         createCity,
         deleteCity,
       }}

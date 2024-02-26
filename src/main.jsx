@@ -16,6 +16,8 @@ import Cities from "./routes/Cities";
 import Countries from "./routes/Countries";
 import Form from "./routes/Form";
 import City from "./routes/City";
+import Signup from "./routes/Signup";
+import ProtectedRoute from "./routes/ProtectedRoute";
 
 const router = createBrowserRouter([
   {
@@ -36,8 +38,16 @@ const router = createBrowserRouter([
         element: <Login />,
       },
       {
+        path: "signup",
+        element: <Signup />,
+      },
+      {
         path: "app",
-        element: <App />,
+        element: (
+          <ProtectedRoute>
+            <App />
+          </ProtectedRoute>
+        ),
         errorElement: <NotFound />,
         children: [
           {

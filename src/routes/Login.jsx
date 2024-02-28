@@ -6,7 +6,7 @@ import { useAuth } from "../contexts/AuthContext";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { user, error, isLoading, login } = useAuth();
+  const { user, error, isLoading, login, dispatch } = useAuth();
   const navigate = useNavigate();
 
   async function handleSubmit(e) {
@@ -18,14 +18,17 @@ export default function Login() {
     if (user) {
       navigate("/app", { replace: true });
     }
-  }, [user, navigate]);
+    return () => {
+      dispatch({ type: "CLEAR_ERROR" });
+    };
+  }, [user, navigate, dispatch]);
 
   return (
-    <section id="login">
-      <div className="container-fluid">
+    <section id="login" className="m-3">
+      {error && <Alert variant="danger" message={error} />}
+      <div className="bg-light bg-opacity-75 p-3">
         <form onSubmit={handleSubmit}>
           <h2>Sign in to your account</h2>
-          {error && <Alert variant="danger" message={error} />}
           <div className="mb-3">
             <label htmlFor="email" className="form-label">
               Email address
@@ -56,7 +59,7 @@ export default function Login() {
             />
           </div>
           <button
-            className="btn btn-primary"
+            className="btn btn-success"
             type="submit"
             disabled={isLoading}
           >

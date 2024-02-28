@@ -11,15 +11,20 @@ export default function Navbar() {
 
   return (
     <nav className="navbar">
-      <div className="container-fluid">
+      <div className="container">
         <NavLink className="navbar-brand" to={``}>
-          Places
+          🌐 Places
         </NavLink>
         <div className="navbar-nav d-flex flex-row gap-3">
           {!user && (
-            <NavLink className="nav-link" to={`about`}>
-              About
-            </NavLink>
+            <>
+              <NavLink className="nav-link" to={`about`}>
+                About
+              </NavLink>
+              <NavLink className="btn btn-primary" to={`signup`}>
+                Sign up
+              </NavLink>
+            </>
           )}
           {user ? (
             <button
@@ -30,7 +35,7 @@ export default function Navbar() {
               Log out
             </button>
           ) : (
-            <NavLink className="btn btn-primary" to={`login`}>
+            <NavLink className="btn btn-link" to={`login`}>
               Log in
             </NavLink>
           )}

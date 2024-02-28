@@ -28,3 +28,10 @@ export async function logout() {
     throw new Error(error.message);
   }
 }
+
+export async function getUser() {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  return user;
+}

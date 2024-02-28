@@ -1,10 +1,12 @@
+import Alert from "../components/Alert";
 import CountriesList from "../components/CountriesList";
-import Spinner from "../components/Spinner";
 import { useCities } from "../contexts/CitiesContext";
 
 export default function Cities() {
-  const { cities, isLoading } = useCities();
-  if (isLoading) return <Spinner />;
+  const { cities } = useCities();
+
+  if (!cities)
+    return <Alert variant="info" message="Click on the map to add a country" />;
 
   const countryInfo = {};
 

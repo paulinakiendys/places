@@ -12,8 +12,11 @@ export default function About() {
     }
   }, [user, navigate]);
   return (
-    <section id="about">
-      <div className="container-fluid">
+    <section
+      id="about"
+      className="d-flex justify-content-center align-items-center"
+    >
+      <div className="bg-light bg-opacity-75 p-3 m-3 col-sm-10 col-md-8 col-lg-6">
         <h2>About Places</h2>
         <p>
           At Places, we believe that every location holds a unique story, and

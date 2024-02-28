@@ -13,8 +13,11 @@ export default function Index() {
   }, [user, navigate]);
 
   return (
-    <section id="index">
-      <div className="container-fluid">
+    <section
+      id="index"
+      className="d-flex justify-content-center align-items-center"
+    >
+      <div className="bg-light bg-opacity-75 p-3 m-3 col-sm-10 col-md-8 col-lg-6">
         <h1>Welcome to Places</h1>
         <h2>Your Personal Journey Tracker</h2>
         <p>
@@ -24,9 +27,11 @@ export default function Index() {
           places you&apos;ve visited. Capture memories, share experiences, and
           relive your adventures with Places.
         </p>
-        <Link className="btn btn-primary btn-lg" to={"login"}>
-          Start tracking
-        </Link>
+        <div className="text-center">
+          <Link className="btn btn-success btn-lg" to={"login"}>
+            Start tracking
+          </Link>
+        </div>
       </div>
     </section>
   );

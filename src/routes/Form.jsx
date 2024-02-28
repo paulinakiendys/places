@@ -65,7 +65,7 @@ export default function Form() {
 
   return (
     <section id="addCity">
-      <div className="container-fluid">
+      <div className="container-fluid bg-light bg-opacity-75 p-3">
         <form onSubmit={handleSubmit}>
           <h2>Add a city</h2>
           <div className="mb-3">
@@ -121,14 +121,16 @@ export default function Form() {
               Enter some notes about your visit.
             </div>
           </div>
-          <button
-            className="btn btn-primary"
-            type="submit"
-            disabled={isLoadingAddCity}
-          >
-            Add city
-          </button>
-          <BackButton url={"/app"} />
+          <div className="d-flex gap-3">
+            <button
+              className="btn btn-primary"
+              type="submit"
+              disabled={isLoadingAddCity}
+            >
+              Add city
+            </button>
+            <BackButton url={"/app"} />
+          </div>
         </form>
       </div>
     </section>

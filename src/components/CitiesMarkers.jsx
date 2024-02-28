@@ -1,6 +1,7 @@
 import { Marker, Popup } from "react-leaflet";
 
 export default function CitiesMarkers({ cities }) {
+  if (!cities) return;
   return (
     <>
       {cities.map((city) => (

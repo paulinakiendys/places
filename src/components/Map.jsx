@@ -41,9 +41,10 @@ export default function Map() {
       {!geolocationPosition && (
         <button
           type="button"
-          className="btn btn-primary"
+          className="btn btn-success m-3 position-absolute top-0 start-50 translate-middle-x"
           onClick={getPosition}
           disabled={isLoadingGeolocation}
+          style={{ zIndex: "1000" }}
         >
           {isLoadingGeolocation ? "Loading" : "Use my position"}
         </button>

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { MapContainer, TileLayer } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
 import { useCities } from "../contexts/CitiesContext";
 import UpdateMapCenter from "./UpdateMapCenter";
 import CitiesMarkers from "./CitiesMarkers";
